@@ -1,78 +1,86 @@
 # PLAN.md — Academia Horizonte: sistema de certificados
 
-Plan de implementación por etapas. **Seguimos en modo Plan: no se escribe código hasta aprobar cada etapa.**
+Plan de implementación por etapas. **Estado: COMPLETADO.** Todas las etapas
+fueron implementadas y verificadas con los datos reales de `Insumos/`.
 
-## Etapa 0 — Entorno (preparar la cocina)
+## Etapa 0 — Entorno ✅
 
 - **Qué hacer**
-  - Instalar Python 3 (no está instalado en esta máquina; `python` no existe en PATH).
+  - Instalar Python 3.
   - Crear entorno virtual `.venv` y activarlo.
-  - Crear `requirements.txt` con las librerías elegidas.
+  - Crear `requirements.txt` con `flask`, `openpyxl`, `pytest`.
 - **Cómo validar**
-  - `python --version` responde 3.x.
-  - `python -c "import flask, openpyxl"` no da error dentro del venv.
+  - `python --version` responde 3.x. ✅
+  - `python -c "import flask, openpyxl"` no da error dentro del venv. ✅
 
-## Etapa 1 — Validación del cruce de datos (bodega)
+## Etapa 1 — Validación del cruce de datos (bodega) ✅
 
 - **Qué hacer**
-  - Escribir `validar.py`: lee ambos Excel con openpyxl y produce un reporte:
-    - Encabezados esperados en cada hoja.
-    - Conteos: filas del maestro, filas de evaluaciones, grupos (Identificacion + Programa).
-    - IDs del maestro sin evaluaciones (esperado: `304560321`).
-    - IDs evaluados que no están en el maestro (esperado: `999880777`).
-    - Grupos con menos de 4 módulos (esperado: 8, todos de Excel Avanzado con 3).
-    - Rangos: notas 0-100, asistencia 0-100, fechas ISO, IDs de 9 dígitos.
-  - Decidir política de casos borde (punto de decisión con el usuario):
-    - Opción recomendada: certificados solo para estudiantes del maestro con datos; los casos borde aparecen en el reporte, no en la emisión.
+  - `validar.py`: lee ambos Excel con openpyxl y produce un reporte (resumen
+    general, tabla completa por estudiante+programa e inconsistencias).
+  - Política de casos borde acordada: certificados solo para estudiantes del
+    maestro con datos; los casos borde solo aparecen en el reporte.
 - **Cómo validar**
-  - El reporte coincide con los números reales medidos en el análisis:
-    - Maestro: 24 estudiantes (16 IA, 8 Excel, cohorte 2026-A).
-    - Evaluaciones: 88 filas → 24 grupos.
-    - 1 ID sin evaluaciones, 1 ID fuera del maestro, 8 grupos con 3/4 módulos, 0 conflictos de programa.
+  - Reporte coincide con los números reales:
+    - Maestro: 24 estudiantes (16 IA, 8 Excel, cohorte 2026-A). ✅
+    - Evaluaciones: 88 filas → 24 grupos. ✅
+    - 1 ID sin evaluaciones (`304560321`), 1 fuera del maestro (`999880777`),
+      8 grupos con módulos incompletos. ✅
 
-## Etapa 2 — Backend Flask (cocina)
+## Etapa 2 — Backend Flask (cocina) ✅
 
 - **Qué hacer**
   - `modulos/bodega.py`: carga los Excel a estructuras de Python (sin modificarlos).
-  - `modulos/cocina.py`: funciones puras de negocio:
-    - agrupar por Identificacion + Programa;
-    - promedio = suma de Notas / módulos cursados;
-    - asistencia = promedio de Asistencia_Pct;
-    - clasificar: Aprobación (prom >= 70 y asist >= 80), Participación (prom < 70 y asist >= 80), Sin certificado (asist < 80). Límites INCLUSIVOS.
+  - `modulos/cocina.py`: funciones puras de negocio: agrupar por Identificacion +
+    Programa; promedio = suma de Notas / módulos cursados; asistencia = promedio
+    de Asistencia_Pct; clasificar Aprobación/Participación/Sin certificado con
+    límites INCLUSIVOS.
   - `app.py`: servidor Flask con rutas que muestran resultados; sin lógica en el frontend.
 - **Cómo validar**
-  - Pruebas con casos límite: promedio 70.00 exacto → aprobación; asistencia 80.00 exacta → aprobación; asistencia 79.99 → sin certificado; grupo con 3 módulos promedia sobre 3.
-  - Prueba con los Excel reales → los conteos esperados son:
-    - Con la política recomendada (solo maestro): **23 estudiantes evaluables** → 19 Aprobación, 3 Participación, 1 Sin certificado, +1 (304560321) sin datos en el reporte.
-    - Si se incluye al evaluado fuera del maestro: 20 Aprobación (el extra `999880777`).
+  - Pruebas de caso límite (70.00 exacto → aprobación; 80.00 → aprobación;
+    79.99 → sin certificado; grupo de 3 módulos promedia sobre 3). ✅
+  - Prueba con los Excel reales → **19 Aprobación, 3 Participación, 1 Sin
+    certificado** (el evaluado fuera del maestro `999880777` no cuenta). ✅
+  - Camila Rojas (101230456): promedio 91.25, asistencia 96.25, Aprobación. ✅
 
-## Etapa 3 — Interfaz (salón)
+## Etapa 3 — Interfaz (salón) ✅
 
 - **Qué hacer**
-  - Plantillas Jinja2 en `templates/` servidas por Flask.
+  - Plantillas Jinja2 en `templates/index.html` servidas por Flask.
   - `static/estilos.css`: diseño azul marino y dorado (Academia Horizonte).
-  - Páginas: inicio, reporte de validación, resultados por programa, detalle por estudiante.
-  - El HTML solo muestra datos; no calcula ni decide nada (sin JS de cálculo).
+  - Filtro por programa. El HTML solo muestra datos; no calcula ni decide. ✅
 - **Cómo validar**
-  - Navegador: tablas correctas, tildes y acentos visibles, diseño responsive, sin errores de plantilla.
+  - Navegador: contadores 19/3/1, filas con color (verde/azul/rojo),
+    tildes visibles, sección de inconsistencias. ✅
 
-## Etapa 4 — Prueba integral
+## Etapa 4 — Prueba integral ✅
 
 - **Qué hacer**
-  - Ejecutar la app completa: entorno → validación → backend → interfaz.
-  - Revisar flujo completo y documentar comandos de arranque.
+  - Ejecutar la app completa de punta a punta.
 - **Cómo validar**
-  - Checklist final: arranque con un comando, reporte de validación correcto, conteos 19/3/1 (o 20/3/1 según política), páginas sin errores.
+  - `pytest`: **15/15 aprobadas**. ✅
+  - Página principal `http://localhost:5000`: HTTP 200, contadores e
+    inconsistencias correctas. ✅
+  - Arranque con doble clic: `iniciar_app.bat` (abre el navegador). ✅
 
-## Estructura de archivos prevista
+## Estructura de archivos final
 
 ```
 app.py                  # Flask: rutas y servidor
 modulos/bodega.py       # lectura de los Excel
 modulos/cocina.py       # reglas de negocio
-validar.py              # reporte de validación (Etapa 1)
-templates/              # páginas HTML (Jinja2)
+validar.py              # reporte de validación por consola
+templates/index.html    # página web (Jinja2)
 static/estilos.css      # azul marino y dorado
+tests/                  # 15 pruebas pytest
+Insumos/                # Excel de entrada (no versionado)
 requirements.txt        # flask, openpyxl, pytest
-.venv/                  # entorno virtual (no se versiona)
+iniciar_app.bat         # arranque con doble clic
+AGENTS.md               # contexto y reglas del proyecto
+.venv/                  # entorno virtual (no versionado)
 ```
+
+## Repositorio
+
+Proyecto versionado en GitHub: `javenalfa-prog/Proyecto-Certificados-Universidad`.
+`Insumos/` y `.venv/` se excluyen con `.gitignore` (los datos no se versionan).
