@@ -1,0 +1,14 @@
+# Entorno virtual
+.venv/
+venv/
+
+# Caché de Python
+__pycache__/
+*.py[cod]
+
+# Datos de entrada (Excel): se mantienen fuera del repo
+Insumos/
+
+# Herramientas
+.vscode/
+.idea/

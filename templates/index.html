@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academia Horizonte — Certificados</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='estilos.css') }}">
+</head>
+<body>
+    <!-- Ladrillo: encabezado de la Academia (azul marino y dorado). -->
+    <header class="cabecera">
+        <h1>Academia Horizonte</h1>
+        <p>Certificados de la cohorte 2026-A</p>
+    </header>
+
+    <main class="contenido">
+        <!-- Ladrillo: contadores de certificados por tipo. -->
+        <section class="contadores" aria-label="Contadores de certificados">
+            <div class="tarjeta tarjeta-aprobacion">
+                <span class="numero">{{ contadores.aprobacion }}</span>
+                <span class="etiqueta">Certificados de Aprobación</span>
+            </div>
+            <div class="tarjeta tarjeta-participacion">
+                <span class="numero">{{ contadores.participacion }}</span>
+                <span class="etiqueta">Certificados de Participación</span>
+            </div>
+            <div class="tarjeta tarjeta-sin">
+                <span class="numero">{{ contadores.sin_certificado }}</span>
+                <span class="etiqueta">Estudiantes sin certificado</span>
+            </div>
+        </section>
+
+        <!-- Ladrillo: filtro por programa (formulario GET servido por Flask). -->
+        <section class="filtro">
+            <form method="get" action="/">
+                <label for="programa">Filtrar por programa:</label>
+                <select name="programa" id="programa">
+                    <option value="">Todos</option>
+                    <!-- Ladrillo: BUCLE de Jinja2 que recorre los programas. -->
+                    {% for p in programas %}
+                    <!-- Ladrillo: CONDICIONAL de Jinja2 para marcar el elegido. -->
+                    <option value="{{ p }}" {% if p == programa_seleccionado %}selected{% endif %}>{{ p }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Filtrar</button>
+            </form>
+            <p class="nota-filtro">Mostrando {{ total_mostrados }} de {{ total_general }} estudiantes con datos.</p>
+        </section>
+
+        <!-- Ladrillo: tabla de resultados. -->
+        <section class="tabla-resultados">
+            <h2>Resultados por estudiante</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Programa</th>
+                        <th>Módulos</th>
+                        <th>Promedio</th>
+                        <th>Asistencia</th>
+                        <th>Certificado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Ladrillo: BUCLE de Jinja2 que recorre cada fila. -->
+                    {% for f in filas %}
+                    <!-- Ladrillo: la clase de color la decide la cocina (f.clase). -->
+                    <tr class="fila-{{ f.clase }}">
+                        <td>{{ f.nombre }}</td>
+                        <td>{{ f.programa }}</td>
+                        <td>{{ f.modulos }}</td>
+                        <td>{{ '%.2f' | format(f.promedio) }}</td>
+                        <td>{{ '%.2f' | format(f.asistencia) }}</td>
+                        <td><span class="badge badge-{{ f.clase }}">{{ f.certificado }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Ladrillo: sección aparte de inconsistencias detectadas. -->
+        <section class="inconsistencias">
+            <h2>Inconsistencias detectadas</h2>
+
+            <div class="bloque">
+                <h3>1. Estudiantes del maestro sin ninguna evaluación ({{ inconsistencias.sin_evaluaciones | length }})</h3>
+                <ul>
+                    {% for e in inconsistencias.sin_evaluaciones %}
+                    <li>{{ e.identificacion }} — {{ e.nombre }} ({{ e.programa }})</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="bloque">
+                <h3>2. Identificaciones evaluadas que no están en el maestro ({{ inconsistencias.fuera_del_maestro | length }})</h3>
+                <ul>
+                    {% for e in inconsistencias.fuera_del_maestro %}
+                    <li>{{ e.identificacion }} — {{ e.programa }} ({{ e.modulos }} módulos)</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="bloque">
+                <h3>3. Grupos con menos de 4 módulos ({{ inconsistencias.modulos_incompletos | length }})</h3>
+                <ul>
+                    {% for e in inconsistencias.modulos_incompletos %}
+                    <li>{{ e.identificacion }} — {{ e.programa }} ({{ e.modulos }}/4)</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+
+        <!-- Ladrillo: pie de página. -->
+        <footer class="pie">
+            <p>Academia Horizonte · Datos generados desde <code>Insumos/</code> sin modificar los archivos.</p>
+        </footer>
+    </main>
+</body>
+</html>

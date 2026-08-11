@@ -1,0 +1,249 @@
+/* ============================================================
+   estilos.css — Academia Horizonte (azul marino y dorado)
+   ============================================================ */
+
+/* Ladrillo: VARIABLES de color de la marca. */
+:root {
+    --azul-marino: #0a2a5e;
+    --azul-oscuro: #071d40;
+    --dorado: #c9a227;
+    --dorado-claro: #e8cd6e;
+    --fondo: #f4f6fb;
+    --texto: #1c2733;
+}
+
+/* Ladrillo: estilo general del cuerpo de la página. */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background-color: var(--fondo);
+    color: var(--texto);
+}
+
+/* ============ Cabecera (azul marino con borde dorado) ============ */
+.cabecera {
+    background: linear-gradient(135deg, var(--azul-oscuro), var(--azul-marino));
+    color: #ffffff;
+    padding: 28px 24px;
+    text-align: center;
+    border-bottom: 5px solid var(--dorado);
+}
+
+.cabecera h1 {
+    font-size: 2.1rem;
+    letter-spacing: 2px;
+    color: var(--dorado-claro);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.cabecera p {
+    margin-top: 6px;
+    font-size: 1rem;
+    color: #dfe7f5;
+}
+
+/* ============ Contenido principal ============ */
+.contenido {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 24px 16px 48px;
+}
+
+/* ============ Contadores (tarjetas) ============ */
+.contadores {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 28px;
+}
+
+.tarjeta {
+    flex: 1 1 200px;
+    max-width: 260px;
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 18px 14px;
+    text-align: center;
+    border-top: 5px solid var(--dorado);
+    box-shadow: 0 3px 8px rgba(10, 42, 94, 0.15);
+}
+
+.tarjeta .numero {
+    display: block;
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: var(--azul-marino);
+}
+
+.tarjeta .etiqueta {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.95rem;
+    color: #55606e;
+}
+
+/* Ladrillo: colores por tipo en las tarjetas y en la tabla. */
+.tarjeta-aprobacion { border-top-color: #2e7d32; }
+.tarjeta-participacion { border-top-color: #1565c0; }
+.tarjeta-sin { border-top-color: #c62828; }
+
+/* ============ Filtro por programa ============ */
+.filtro {
+    background: #ffffff;
+    border: 1px solid #dde4f0;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 6px rgba(10, 42, 94, 0.08);
+}
+
+.filtro form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filtro label {
+    font-weight: 600;
+    color: var(--azul-marino);
+}
+
+.filtro select {
+    padding: 7px 10px;
+    border: 1px solid #b9c4d8;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    flex: 1 1 240px;
+    max-width: 360px;
+}
+
+.filtro button {
+    background: var(--azul-marino);
+    color: var(--dorado-claro);
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.filtro button:hover {
+    background: var(--azul-oscuro);
+}
+
+.nota-filtro {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: #68748a;
+}
+
+/* ============ Tabla de resultados ============ */
+.tabla-resultados {
+    background: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #dde4f0;
+    overflow: hidden;
+    box-shadow: 0 3px 8px rgba(10, 42, 94, 0.1);
+    margin-bottom: 28px;
+}
+
+.tabla-resultados h2,
+.inconsistencias h2 {
+    background: var(--azul-marino);
+    color: var(--dorado-claro);
+    padding: 12px 16px;
+    font-size: 1.15rem;
+    letter-spacing: 1px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead th {
+    background: var(--azul-oscuro);
+    color: #ffffff;
+    text-align: left;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+tbody td {
+    padding: 9px 12px;
+    border-bottom: 1px solid #eef1f7;
+    font-size: 0.95rem;
+}
+
+/* Ladrillo: color de la fila según el tipo de certificado.
+   (la clase la asigna la cocina: fila-aprobacion, fila-participacion, fila-sin-certificado) */
+.fila-aprobacion td { background-color: #e8f5e9; color: #1b5e20; }
+.fila-participacion td { background-color: #e3f2fd; color: #0d47a1; }
+.fila-sin-certificado td { background-color: #ffebee; color: #b71c1c; }
+
+/* Ladrillo: distintivo (badge) con el tipo de certificado. */
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.badge-aprobacion { background-color: #2e7d32; }
+.badge-participacion { background-color: #1565c0; }
+.badge-sin-certificado { background-color: #c62828; }
+
+/* ============ Inconsistencias ============ */
+.inconsistencias {
+    background: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #dde4f0;
+    overflow: hidden;
+    box-shadow: 0 3px 8px rgba(10, 42, 94, 0.1);
+}
+
+.bloque {
+    padding: 14px 16px;
+    border-bottom: 1px solid #eef1f7;
+}
+
+.bloque:last-child {
+    border-bottom: none;
+}
+
+.bloque h3 {
+    font-size: 0.98rem;
+    color: var(--azul-marino);
+    margin-bottom: 6px;
+}
+
+.bloque ul {
+    margin-left: 20px;
+    color: #48546a;
+    font-size: 0.92rem;
+}
+
+/* ============ Pie de página ============ */
+.pie {
+    margin-top: 28px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #68748a;
+}
+
+.pie code {
+    background: #e8ecf5;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
