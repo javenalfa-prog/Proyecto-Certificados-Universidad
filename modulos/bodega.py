@@ -6,11 +6,18 @@ Solo lee los Excel de Insumos/ (nunca los modifica) y los convierte
 en estructuras de Python listas para que la cocina trabaje con ellas.
 """
 
+from pathlib import Path
+
 import openpyxl
 
+# Ladrillo: VARIABLE constante con la raíz del proyecto.
+# Se calcula desde la ubicación de este archivo (bodega.py en modulos/),
+# así las rutas de Insumos/ funcionan sin importar desde dónde se ejecute.
+RAIZ = Path(__file__).resolve().parent.parent
+
 # Ladrillo: VARIABLES constantes con las rutas de los archivos de la Bodega.
-RUTA_MAESTRO = 'Insumos/Maestro_Estudiantes.xlsx'
-RUTA_REGISTRO = 'Insumos/Registro_Evaluaciones.xlsx'
+RUTA_MAESTRO = RAIZ / 'Insumos' / 'Maestro_Estudiantes.xlsx'
+RUTA_REGISTRO = RAIZ / 'Insumos' / 'Registro_Evaluaciones.xlsx'
 
 
 def cargar_estudiantes(ruta=RUTA_MAESTRO):

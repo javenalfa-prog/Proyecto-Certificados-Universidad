@@ -2,12 +2,17 @@
 .venv/
 venv/
 
-# Caché de Python
+# Caché y archivos generados por Python
 __pycache__/
 *.py[cod]
+.pytest_cache/
 
-# Datos de entrada (Excel): se mantienen fuera del repo
-Insumos/
+# Archivos temporales
+*.tmp
+*.temp
+*.log
+.DS_Store
+Thumbs.db
 
 # Herramientas
 .vscode/
